@@ -1,37 +1,24 @@
-type CompaniesResultType = {
-    id: string,
-    city: string,
-    createdAt: string,
-    logo: string,
-    name: string,
-    streetName: string,
-    zipCode: string
-}
+import {CompaniesResultType, GetCompaniesPayloadType, GetCompanyDetailsPayloadType} from "./index"
 
-type GetCompaniesPayloadType = {
-    data: CompaniesResultType[]
-}
-
-const request = async (path: string, params = {}) => {
-    const response = await fetch(`https://617c09aad842cf001711c200.mockapi.io/v1/${path}`, {
-        headers: {
-            'Content-Type': 'application/json'
-          },
-          ...params
-    })
-    return response.json()    
-}
-
-export const getCompanies = (search?: string):Promise<GetCompaniesPayloadType> => {
-    if (!search) {
-        return request('/companies')
+const request = async <T>(path: string): Promise<T> => {
+  const response = await fetch(`https://617c09aad842cf001711c200.mockapi.io/v1${path}`, {
+    headers: {
+      'Content-Type': 'application/json'
     }
-
-    const params = new URLSearchParams()
-    params.append('search', search)
-    return request(`/companies?${params.toString()}`)
+  })
+  return response.json()
 }
 
-export const getCompany = async (id: string) => request(`/company/${id}`)
+export const getCompanies = (search?: string): Promise<GetCompaniesPayloadType> => {
+  if (!search) {
+    return request<GetCompaniesPayloadType>('/companies')
+  }
 
-export const getCompanyDetails = async (id: string) => request(`/company/${id}/details`)
+  const params = new URLSearchParams()
+  params.append('search', search)
+  return request(`/companies?${params.toString()}`)
+}
+
+export const getCompany = async (id: string) => request<CompaniesResultType>(`/companies/${id}`)
+
+export const getCompanyDetails = async (id: string) => request<GetCompanyDetailsPayloadType>(`/companies/${id}/details`)

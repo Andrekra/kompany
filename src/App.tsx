@@ -1,36 +1,27 @@
-import React, {useState, useCallback} from 'react';
-import logo from './logo.svg';
-import './App.css';
-import { getCompanies } from './api/client';
+import React from 'react'
+import './App.css'
+import {Routes, Route, Link} from "react-router-dom"
+import CompanyList from './pages/CompanyList'
+import CompanyDetails from './pages/CompanyDetails'
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Image from 'react-bootstrap/Image';
 
 function App() {
-  const [results, setResults] = useState<any>(undefined)
-
-  const handleSubmit = useCallback(async (event: any) => {
-    event.preventDefault()
-    const results = await getCompanies()
-    console.log(results)
-    if (results) {
-      setResults(results)
-    }
-  }, [setResults])
-
   return (
-    <div className="App">
-
-      <div className="search-bar">
-        <form onSubmit={handleSubmit}>
-          <input type="text" placeholder="Voer een bedrijfsnaam in" />
-          <button type="submit">Zoeken</button>
-        </form>
-      </div>
-      <div className="results">
-        {results ? results.map((result: any, index: number) => (
-          <pre key={index}>{JSON.stringify(result)}</pre>
-        )) : "Helaaa niets gevonden. Probeer een andere zoekterm."}
-      </div>
-    </div>
-  );
+    <Container fluid>
+      <Row>
+        <Col><Link to='/'><Image src='/logo192.png' className='logo' alt="Kompany logo" role="logo"/></Link></Col>
+      </Row>
+      <Container>
+        <Routes>
+          <Route path="/" element={<CompanyList/>}/>
+          <Route path="companies/:id" element={<CompanyDetails/>}/>
+        </Routes>
+      </Container>
+    </Container>
+  )
 }
 
-export default App;
+export default App
