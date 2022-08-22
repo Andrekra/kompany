@@ -1,24 +1,34 @@
-import React from 'react';
+import React, {useState, useCallback} from 'react';
 import logo from './logo.svg';
 import './App.css';
+import { getCompanies } from './api/client';
 
 function App() {
+  const [results, setResults] = useState<any>(undefined)
+
+  const handleSubmit = useCallback(async (event: any) => {
+    event.preventDefault()
+    const results = await getCompanies()
+    console.log(results)
+    if (results) {
+      setResults(results)
+    }
+  }, [setResults])
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+
+      <div className="search-bar">
+        <form onSubmit={handleSubmit}>
+          <input type="text" placeholder="Voer een bedrijfsnaam in" />
+          <button type="submit">Zoeken</button>
+        </form>
+      </div>
+      <div className="results">
+        {results ? results.map((result: any, index: number) => (
+          <pre key={index}>{JSON.stringify(result)}</pre>
+        )) : "Helaaa niets gevonden. Probeer een andere zoekterm."}
+      </div>
     </div>
   );
 }
